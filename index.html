@@ -745,14 +745,13 @@ section{padding:48px 28px;text-align:center;position:relative;overflow:hidden;di
     e.preventDefault();
     btn.textContent='Sending...';btn.disabled=true;
     var data=new FormData(f);
-    var json={};data.forEach(function(v,k){json[k]=v});
     fetch('https://api.web3forms.com/submit',{
-      method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify(json)
+      method:'POST',
+      body:data
     }).then(function(r){return r.json()}).then(function(d){
       if(d.success){f.style.display='none';s.classList.add('show');s.scrollIntoView({behavior:'smooth',block:'center'})}
-      else{err.style.display='block';btn.textContent='Send RSVP';btn.disabled=false}
-    }).catch(function(){err.style.display='block';btn.textContent='Send RSVP';btn.disabled=false});
+      else{err.style.display='block';err.querySelector('p').textContent=d.message||'Please try again.';btn.textContent='Send RSVP';btn.disabled=false}
+    }).catch(function(ex){err.style.display='block';err.querySelector('p').textContent='Network error: '+ex.message;btn.textContent='Send RSVP';btn.disabled=false});
   });
 })();
 
